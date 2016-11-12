@@ -1,0 +1,105 @@
+#parse( "include/common.vm" )
+#@frame("每日省份趋势", [], ['echarts/echarts.min.js'])
+<div class="container online_block">
+    <form class="form-inline" style="text-align:center; margin-top: 10px;" name="searchForm" id="searchForm">
+        天数：
+        <div class="form-group">
+            <select id="day" name="day" class="form-control">
+                <option value="7" #if(${day} == 7) selected #end>近7天</option>
+                <option value="30" #if(${day} == 30) selected #end>近30天</option>
+                <option value="90" #if(${day} == 90) selected #end>近90天</option>
+            </select>
+        </div>
+        省份：
+        <div class="form-group">
+            <select id="provinceId" name="provinceId" class="form-control">
+                #foreach($province in $provinceIdList)
+                    <option value="${province}" #if(${province} == ${provinceId}) selected #end>${provinceMap.get(${province})}</option>
+                #end
+            </select>
+        </div>
+        <br/>
+        <br/>
+    </form>
+    <div class="row">
+        <div id="provinceShow" class="col-md-12" style="height:400px;">Loading...</div>
+    </div>
+
+
+</div>
+<script type="text/javascript">
+
+    jQuery(document).ready(function () {
+        // 选择如果有变更，则直接搜索
+        $("#searchForm select").bind("change", function () {
+            search();
+        });
+        function search() {
+            $("#searchForm").submit();
+        }
+        #if((${provinceSourceIdList.size()} > 0) || (${provinceDateList.size()} > 0))
+            var provinceChart = echarts.init(document.getElementById('provinceShow'));
+            var provinceDateData = new Array();
+            var provinceSeriesData = new Array();
+            var provinceSourceData = new Array();
+            #foreach($date in $provinceDateList)
+                provinceDateData.push('$date');
+            #end
+            #foreach($sourceId in $provinceSourceIdList)
+                var dataList = ${provinceSourceBufferingListMap.get($sourceId)};
+                var sourceName = '${provinceSourceNameMap.get($sourceId)}';
+                provinceSourceData.push(sourceName);
+                var bufferRateData = new Array();
+                dataList.forEach(function(bufferRate){
+                    bufferRateData.push(bufferRate);
+                });
+                var series = new Object();
+                series.name = sourceName;
+                series.type = 'line';
+                series.data = bufferRateData;
+//                series.markLine = { data: [ {type: 'average', name: '平均值'} ]};
+                provinceSeriesData.push(series);
+            #end
+            var option = {
+                title: {
+                    text: '卡顿比',
+                    subtext: '近${day}天'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data: provinceSourceData
+                },
+                toolbox: {
+                    show: true,
+                    feature: {
+                        dataZoom: {
+                            yAxisIndex: 'none'
+                        },
+                        dataView: {readOnly: false},
+                        magicType: {type: ['line', 'bar']},
+                        restore: {},
+                        saveAsImage: {}
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: provinceDateData
+                },
+                yAxis: {
+                    type: 'value',
+                    axisLabel: {
+                        formatter: '{value} %'
+                    }
+                },
+                series: provinceSeriesData
+            };
+            provinceChart.setOption(option);
+        #end
+
+    });
+
+</script>
+#end

@@ -1,0 +1,177 @@
+#parse( "include/common.vm" )
+#@frame("每日卡顿趋势", [], ['echarts/echarts.min.js'])
+<div class="container online_block">
+    <form class="form-inline" style="text-align:center; margin-top: 10px;" name="searchForm" id="searchForm">
+        天数：
+        <div class="form-group">
+            <select id="day" name="day" class="form-control">
+                <option value="7" #if(${day} == 7) selected #end>近7天</option>
+                <option value="30" #if(${day} == 30) selected #end>近30天</option>
+                <option value="90" #if(${day} == 90) selected #end>近90天</option>
+            </select>
+        </div>
+        <br/>
+        <br/>
+    </form>
+    <div class="row" >
+        <div id="dailyPlatformBuffering" class="col-md-15" style="height:400px;">Loading...</div>
+
+    </div>
+    <div class="row">
+        <div id="buffering" class="col-md-15" style="height:400px;">Loading...</div>
+    </div>
+
+
+
+</div>
+<script type="text/javascript">
+
+    jQuery(document).ready(function () {
+        // 选择如果有变更，则直接搜索
+        $("#searchForm select").bind("change", function () {
+            search();
+        });
+        function search() {
+            $("#searchForm").submit();
+        }
+        #if((${streamPlatformBufferingList.size()} > 0) || (${streamBufferingDateFormatList.size()} > 0))
+            var dailyStreamPlatformBufferingChart = echarts.init(document.getElementById('dailyPlatformBuffering'));
+            var dailyStreamPlatformBufferingDateData = new Array();
+            var dailyStreamPlatformBufferingSeriesData = new Array();
+            var dailyStreamPlatformBufferingPlatformData = new Array();
+            #foreach($date in $streamBufferingDateFormatList)
+                dailyStreamPlatformBufferingDateData.push('$date');
+            #end
+            #foreach($platformId in $streamPlatformBufferingList)
+                var dataList = ${streamPlatformBufferingListMap.get($platformId)};
+                var platformName = '${streamPlatformBufferingMap.get($platformId)}';
+                dailyStreamPlatformBufferingPlatformData.push(platformName);
+                var bufferRateData = new Array();
+                dataList.forEach(function(bufferRate){
+                    bufferRateData.push(bufferRate);
+                });
+                var series = new Object();
+                series.name = platformName;
+                series.type = 'line';
+                series.data = bufferRateData;
+                series.markLine = { data: [ {type: 'average', name: '平均值'} ]};
+                dailyStreamPlatformBufferingSeriesData.push(series);
+            #end
+            var option = {
+                title: {
+                    text: '卡顿率',
+                    subtext: '近${day}天'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                toolbox: {
+                    show: true,
+                    feature: {
+                        dataZoom: {
+                            yAxisIndex: 'none'
+                        },
+                        dataView: {readOnly: false},
+                        magicType: {type: ['line', 'bar']},
+                        restore: {},
+                        saveAsImage: {}
+                    }
+                },
+                legend: {
+                    bottom: 20,
+                    left: 'center',
+                    data: dailyStreamPlatformBufferingPlatformData,
+                    selected: {
+                        '${streamPlatformBufferingMap.get(0)}' : false,
+                        '${streamPlatformBufferingMap.get(1)}' : true,
+                        '${streamPlatformBufferingMap.get(2)}' : true,
+                        '${streamPlatformBufferingMap.get(3)}' : true,
+                        '${streamPlatformBufferingMap.get(4)}' : false,
+                        '${streamPlatformBufferingMap.get(5)}' : false,
+                        '${streamPlatformBufferingMap.get(6)}' : false,
+                        '${streamPlatformBufferingMap.get(7)}' : false,
+                        '${streamPlatformBufferingMap.get(8)}' : false,
+                        '${streamPlatformBufferingMap.get(9)}' : false
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: dailyStreamPlatformBufferingDateData
+                },
+                yAxis: {
+                    type: 'value',
+                    axisLabel: {
+                        formatter: '{value} s'
+                    }
+                },
+                series: dailyStreamPlatformBufferingSeriesData
+            };
+            dailyStreamPlatformBufferingChart.setOption(option);
+        #end
+
+        #if((${dailyBufferingSourceIdList.size()} > 0) || (${dailyBufferingDateList.size()} > 0))
+            var dailyBufferingChart = echarts.init(document.getElementById('buffering'));
+            var dailyBufferingDateData = new Array();
+            var dailyBufferingSeriesData = new Array();
+            var dailyBufferingSourceData = new Array();
+            #foreach($date in $dailyBufferingDateList)
+                dailyBufferingDateData.push('$date');
+            #end
+            #foreach($sourceId in $dailyBufferingSourceIdList)
+                var dataList1 = ${dailySourceBufferingListMap.get($sourceId)};
+                var sourceName1 = '${firstPlaySourceNameMap.get($sourceId)}';
+                dailyBufferingSourceData.push(sourceName1);
+                var bufferRateData1 = new Array();
+                dataList1.forEach(function(bufferRate){
+                    bufferRateData1.push(bufferRate);
+                });
+                var dailySeries = new Object();
+                dailySeries.name = sourceName1;
+                dailySeries.type = 'line';
+                dailySeries.data = bufferRateData1;
+                dailySeries.markLine = { data: [ {type: 'average', name: '平均值'} ]};
+                dailyBufferingSeriesData.push(dailySeries);
+            #end
+            var dailyOption = {
+                title: {
+                    text: '卡顿率',
+                    subtext: '近${day}天'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data: dailyBufferingSourceData
+                },
+                toolbox: {
+                    show: true,
+                    feature: {
+                        dataZoom: {
+                            yAxisIndex: 'none'
+                        },
+                        dataView: {readOnly: false},
+                        magicType: {type: ['line', 'bar']},
+                        restore: {},
+                        saveAsImage: {}
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: dailyBufferingDateData
+                },
+                yAxis: {
+                    type: 'value',
+                    axisLabel: {
+                        formatter: '{value} %'
+                    }
+                },
+                series: dailyBufferingSeriesData
+            };
+            dailyBufferingChart.setOption(dailyOption);
+        #end
+    });
+
+</script>
+#end

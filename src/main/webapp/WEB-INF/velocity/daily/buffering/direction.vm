@@ -1,0 +1,159 @@
+#parse( "include/common.vm" )
+#@frame("每日卡顿趋势", [], ['echarts/echarts.min.js'])
+<div class="container online_block">
+    <form class="form-inline" style="text-align:center; margin-top: 10px;" name="searchForm" id="searchForm">
+        天数：
+        <div class="form-group">
+            <select id="day" name="day" class="form-control">
+                <option value="7" #if(${day} == 7) selected #end>近7天</option>
+                <option value="30" #if(${day} == 30) selected #end>近30天</option>
+                <option value="90" #if(${day} == 90) selected #end>近90天</option>
+            </select>
+        </div>
+        <br/>
+        <br/>
+    </form>
+    <div class="row">
+        <div id="firstplay" class="col-md-6" style="height:400px;">Loading...</div>
+        <div id="buffering" class="col-md-6" style="height:400px;">Loading...</div>
+    </div>
+
+
+</div>
+<script type="text/javascript">
+
+    jQuery(document).ready(function () {
+        // 选择如果有变更，则直接搜索
+        $("#searchForm select").bind("change", function () {
+            search();
+        });
+        function search() {
+            $("#searchForm").submit();
+        }
+        #if((${firstPlaySourceIdList.size()} > 0) || (${firstPlayDateList.size()} > 0))
+            var firstPlayChart = echarts.init(document.getElementById('firstplay'));
+            var firstPlayDateData = new Array();
+            var firstPlaySeriesData = new Array();
+            var firstPlaySourceData = new Array();
+            #foreach($date in $firstPlayDateList)
+                firstPlayDateData.push('$date');
+            #end
+            #foreach($sourceId in $firstPlaySourceIdList)
+                var dataList = ${firstPlaySourceBufferingListMap.get($sourceId)};
+                var sourceName = '${firstPlaySourceNameMap.get($sourceId)}';
+                firstPlaySourceData.push(sourceName);
+                var bufferRateData = new Array();
+                dataList.forEach(function(bufferRate){
+                    bufferRateData.push(bufferRate);
+                });
+                var series = new Object();
+                series.name = sourceName;
+                series.type = 'line';
+                series.data = bufferRateData;
+                series.markLine = { data: [ {type: 'average', name: '平均值'} ]};
+                firstPlaySeriesData.push(series);
+            #end
+            var option = {
+                title: {
+                    text: '首屏时间',
+                    subtext: '近${day}天'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data: firstPlaySourceData
+                },
+                toolbox: {
+                    show: true,
+                    feature: {
+                        dataZoom: {
+                            yAxisIndex: 'none'
+                        },
+                        dataView: {readOnly: false},
+                        magicType: {type: ['line', 'bar']},
+                        restore: {},
+                        saveAsImage: {}
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: firstPlayDateData
+                },
+                yAxis: {
+                    type: 'value',
+                    axisLabel: {
+                        formatter: '{value} s'
+                    }
+                },
+                series: firstPlaySeriesData
+            };
+            firstPlayChart.setOption(option);
+        #end
+
+        #if((${dailyBufferingSourceIdList.size()} > 0) || (${dailyBufferingDateList.size()} > 0))
+            var dailyBufferingChart = echarts.init(document.getElementById('buffering'));
+            var dailyBufferingDateData = new Array();
+            var dailyBufferingSeriesData = new Array();
+            var dailyBufferingSourceData = new Array();
+            #foreach($date in $dailyBufferingDateList)
+                dailyBufferingDateData.push('$date');
+            #end
+            #foreach($sourceId in $dailyBufferingSourceIdList)
+                var dataList1 = ${dailySourceBufferingListMap.get($sourceId)};
+                var sourceName1 = '${firstPlaySourceNameMap.get($sourceId)}';
+                dailyBufferingSourceData.push(sourceName1);
+                var bufferRateData1 = new Array();
+                dataList1.forEach(function(bufferRate){
+                    bufferRateData1.push(bufferRate);
+                });
+                var dailySeries = new Object();
+                dailySeries.name = sourceName1;
+                dailySeries.type = 'line';
+                dailySeries.data = bufferRateData1;
+                dailySeries.markLine = { data: [ {type: 'average', name: '平均值'} ]};
+                dailyBufferingSeriesData.push(dailySeries);
+            #end
+            var dailyOption = {
+                title: {
+                    text: '卡顿率',
+                    subtext: '近${day}天'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data: dailyBufferingSourceData
+                },
+                toolbox: {
+                    show: true,
+                    feature: {
+                        dataZoom: {
+                            yAxisIndex: 'none'
+                        },
+                        dataView: {readOnly: false},
+                        magicType: {type: ['line', 'bar']},
+                        restore: {},
+                        saveAsImage: {}
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: dailyBufferingDateData
+                },
+                yAxis: {
+                    type: 'value',
+                    axisLabel: {
+                        formatter: '{value} %'
+                    }
+                },
+                series: dailyBufferingSeriesData
+            };
+            dailyBufferingChart.setOption(dailyOption);
+        #end
+    });
+
+</script>
+#end

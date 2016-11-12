@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean id="jellyfishQosMasterDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="driverClass" value="${jellyfish.qos.jdbc.c3p0.driverClass}" />
+		<property name="jdbcUrl" value="${jellyfish.qos.master.jdbc.c3p0.jdbcUrl}" />
+		<property name="user" value="${jellyfish.qos.master.jdbc.c3p0.user}" />
+		<property name="password" value="${jellyfish.qos.master.jdbc.c3p0.password}" />
+		<property name="initialPoolSize" value="${jellyfish.qos.jdbc.c3p0.initialPoolSize}" />
+		<property name="minPoolSize" value="${jellyfish.qos.jdbc.c3p0.minPoolSize}" />
+		<property name="maxPoolSize" value="${jellyfish.qos.jdbc.c3p0.maxPoolSize}" />
+		<property name="idleConnectionTestPeriod" value="${jellyfish.qos.jdbc.c3p0.idleConnectionTestPeriod}" />
+	</bean>
+
+	<bean id="jellyfishQosMasterSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation"
+			value="classpath:sqlmaps/jellyfish_qos_master/sqlMapConfig.xml" />
+		<property name="dataSource" ref="jellyfishQosMasterDataSource" />
+	</bean>
+
+	<bean id="jellyfishQosMasterSqlMapClientTemplate" class="org.springframework.orm.ibatis.SqlMapClientTemplate">
+		<property name="sqlMapClient" ref="jellyfishQosMasterSqlMapClient" />
+	</bean>
+
+</beans>

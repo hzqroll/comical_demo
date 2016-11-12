@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="VideoPlatformBufferingDao">
+
+    <resultMap id="StreamPlatformResult"
+               class="com.roll.comical.console.business.video.buffering.platform.VideoPlatformBuffering">
+        <result property="platformId" column="platform_id"/>
+        <result property="date" column="date"/>
+        <result property="bufferingCount" column="buffering_count"/>
+        <result property="fluencyCount" column="fluency_count"/>
+    </resultMap>
+    <select id="getList" parameterClass="map" resultMap="StreamPlatformResult">
+        <![CDATA[
+        select *
+        from video_platform_buffering_info
+       	where `date` >= #startDate#
+       	and `date` <= #endDate#
+        order by `date` asc, platform_id ASC
+        ]]>
+    </select>
+
+</sqlMap>

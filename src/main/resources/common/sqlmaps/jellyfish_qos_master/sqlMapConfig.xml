@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+
+	<settings useStatementNamespaces="true" />
+    <sqlMap resource="sqlmaps/jellyfish_qos_master/pc_play_buffering_source.xml"/>
+
+    <sqlMap resource="sqlmaps/jellyfish_qos_master/pc_first_play_buffering_source.xml"/>
+
+    <sqlMap resource="sqlmaps/jellyfish_qos_master/pc_province_source.xml"/>
+
+    <sqlMap resource="sqlmaps/jellyfish_qos_master/stream/stream_platform_buffering.xml"/>
+    <sqlMap resource="sqlmaps/jellyfish_qos_master/stream/stream_platform_first_play.xml"/>
+    <sqlMap resource="sqlmaps/jellyfish_qos_master/stream/stream_platform_source_buffering.xml"/>
+    <sqlMap resource="sqlmaps/jellyfish_qos_master/stream/stream_platform_source_first_play.xml"/>
+    <sqlMap resource="sqlmaps/jellyfish_qos_master/video/video_platform_buffering.xml"/>
+    <sqlMap resource="sqlmaps/jellyfish_qos_master/stream/stream_source_platform_province_buffering.xml"/>
+    <sqlMap resource="sqlmaps/jellyfish_qos_master/stream/stream_source_platform_province_first_play.xml"/>
+    <sqlMap resource="sqlmaps/jellyfish_qos_master/video/video_source_platform_province_buffering.xml"/>
+
+</sqlMapConfig>

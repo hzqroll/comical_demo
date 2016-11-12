@@ -1,0 +1,184 @@
+#parse( "include/common.vm" )
+#@frame("省份趋势地图", ['popModal.css','bootstrap-datepicker.min.css'],
+    ['echarts/echarts.min.js','echarts/china1.js','popModal.min.js',
+        'bootstrap-datepicker.min.js',
+    'bootstrap-datepicker.zh-CN.min.js'])
+    #set( $pageDate = $!dateTool.format('yyyy-MM-dd', ${date}))
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
+<div class="container online_block">
+    <form class="form-inline" style="text-align:center; margin-top: 10px;" name="searchForm" id="searchForm">
+        时间:
+        <div class="form-group">
+            <div class="form-group">
+                <input id="date" name="date" placeholder="日期"  size="10"  value="${date}" type="text" class="form-control form_datetime">
+            </div>
+        </div>
+        CDN列表：
+        <div class="form-group">
+            <select id="sourceId" name="sourceId" class="form-control">
+                #foreach($source in $sourceIdAllList)
+                    <option value="${source}" #if(${source} == ${sourceId}) selected #end>${source}
+                        :${sourceAllMap.get(${source})}</option>
+                #end
+            </select>
+        </div>
+        平台列表：
+        <div class="form-group">
+            <select id="platformId" name="platformId" class="form-control">
+                #foreach($platform in $platformIdAllList)
+                    <option value="${platform}" #if(${platform} == ${platformId}) selected #end>${platform}
+                        :${platformNameAllMap.get(${platform})}</option>
+                #end
+            </select>
+        </div>
+        <br/>
+        <br/>
+        <script type="text/javascript">
+
+        </script>
+    </form>
+    <div class="row">
+        <div id="platformSourceBufferingShow" class="col-md-14" style="width: 900px;height:500px;">Loading...</div>
+    </div>
+    <div class="row">
+        <div id="platformSourceFirstplayShow" class="col-md-14" style="width: 900px;height:500px;">Loading...</div>
+    </div>
+
+</div>
+<script type="text/javascript" charset="utf-8">
+
+    jQuery(document).ready(function () {
+            $('.form_datetime').datepicker({
+                autoclose: true,
+                format: "yyyy-mm-dd",
+                weekStart: 1,
+                minViewMode: 3,
+                language: "zh-CN",
+                orientation: "top"
+            });
+        // 选择如果有变更，则直接搜索
+        $("#searchForm select").bind("change", function () {
+            search();
+        });
+        $("#searchForm input").bind("change", function () {
+            search();
+        });
+        function search() {
+            $("#searchForm").submit();
+        }
+
+        #if((${platformIdAllList.size()} > 0))
+            var provinceChart = echarts.init(document.getElementById('platformSourceBufferingShow'));
+            var provinceDateData = new Array();
+            var provinceSeriesData = new Array();
+            #foreach($provinceName in $provinceNameList)
+                var series = new Object();
+                series.name = '百分比';
+                series.type = 'map';
+                series.map = 'china';
+                series.roam = false;
+                series.data = [{
+                    name: '$provinceName',
+                    value: '${platformSourceBufferingListMap.getOrDefault($provinceName,00.0)} '
+                }];
+                provinceSeriesData.push(series);
+            #end
+            var option = {
+                title: {
+                    text: '卡顿率(百分比)',
+                },
+                tooltip: {
+                    trigger: 'item'
+                },
+                visualMap: {
+                    min: 0 ,
+                    max: 100,
+                    left: 'left',
+                    top: 'bottom',
+                    text: ['高', '低'],           // 文本，默认为数值文本
+                    calculable: true
+                },
+                toolbox: {
+                    show: true,
+                    orient : 'vertical',
+                    x: 'right',
+                    y: 'center',
+                    feature : {
+                        mark : {show: true},
+                        dataView : {show: true, readOnly: false},
+                        restore : {show: true},
+                        saveAsImage : {show: true}
+                    }
+                },
+                roamController: {
+                    show: true,
+                    x: 'right',
+                    mapTypeControl: {
+                        'china': true
+                    }
+                },
+                series: provinceSeriesData
+            };
+            provinceChart.setOption(option);
+        #end
+
+        //首屏时间
+        #if((${platformIdAllList.size()} > 0))
+            var provinceChart = echarts.init(document.getElementById('platformSourceFirstplayShow'));
+            var provinceDateData = new Array();
+            var provinceSeriesData = new Array();
+            #foreach($provinceName in $provinceNameList)
+                var series = new Object();
+                series.name = '单位：秒/s';
+                series.type = 'map';
+                series.map = 'china';
+                series.roam = false;
+                series.data = [{
+                    name: '$provinceName',
+                    value: '${platformSourceFirstplayListMap.getOrDefault($provinceName,00.0)} '
+                }];
+                provinceSeriesData.push(series);
+            #end
+            var option = {
+                title: {
+                    text: '首屏时间(秒)',
+                },
+                tooltip: {
+                    trigger: 'item'
+                },
+                visualMap: {
+                    min: 0 ,
+                    max: 5,
+                    left: 'left',
+                    top: 'bottom',
+                    text: ['高', '低'],           // 文本，默认为数值文本
+                    calculable: true
+                },
+                toolbox: {
+                    show: true,
+                    orient : 'vertical',
+                    x: 'right',
+                    y: 'center',
+                    feature : {
+                        mark : {show: true},
+                        dataView : {show: true, readOnly: false},
+                        restore : {show: true},
+                        saveAsImage : {show: true}
+                    }
+                },
+                roamController: {
+                    show: true,
+                    x: 'right',
+                    mapTypeControl: {
+                        'china': true
+                    }
+                },
+                series: provinceSeriesData
+            };
+            provinceChart.setOption(option);
+        #end
+
+    });
+
+</script>
+#end

@@ -1,0 +1,187 @@
+#parse( "include/common.vm" )
+#@frame("每日CDN趋势", [], ['echarts/echarts.min.js'])
+<div class="container online_block">
+    <form class="form-inline" style="text-align:center; margin-top: 10px;" name="searchForm" id="searchForm">
+        天数：
+        <div class="form-group">
+            <select id="day" name="day" class="form-control">
+                <option value="7" #if(${day} == 7) selected #end>近7天</option>
+                <option value="30" #if(${day} == 30) selected #end>近30天</option>
+                <option value="90" #if(${day} == 90) selected #end>近90天</option>
+            </select>
+        </div>
+        平台：
+        <div class="form-group">
+            <select id="platformId" name="platformId" class="form-control">
+                #foreach($platform in $platformIdList)
+                    <option value="${platform}" #if(${platform} == ${platformId}) selected #end>${platform}:${platformMap.get(${platform})}</option>
+                #end
+            </select>
+        </div>
+        <br/>
+        <br/>
+    </form>
+    <div class="row">
+        <div id="platformSourceBufferingShow" class="col-md-15" style="height:400px;">Loading...</div>
+        <div id="platformSourceFirstplayShow" class="col-md-15" style="height:400px;">Loading...</div>
+    </div>
+
+
+</div>
+<script type="text/javascript">
+
+    jQuery(document).ready(function () {
+        // 选择如果有变更，则直接搜索
+        $("#searchForm select").bind("change", function () {
+            search();
+        });
+        function search() {
+            $("#searchForm").submit();
+
+        }
+        #if((${platformSourceIdList.size()} > 0) || (${platformDateFormatList.size()} > 0))
+            var provinceChart = echarts.init(document.getElementById('platformSourceBufferingShow'));
+            var provinceDateData = new Array();
+            var provinceSeriesData = new Array();
+            var provinceSourceData = new Array();
+            #foreach($date in $platformDateFormatList)
+                provinceDateData.push('$date');
+            #end
+            #foreach($sourceId in $platformSourceIdList)
+                var dataList = ${platformSourceBufferingListMap.get($sourceId)};
+                var sourceName = '${platformSourceNameMap.get($sourceId)}';
+                provinceSourceData.push(sourceName);
+                var bufferRateData = new Array();
+                dataList.forEach(function(bufferRate){
+                    bufferRateData.push(bufferRate);
+                });
+                var series = new Object();
+                series.name = sourceName;
+                series.type = 'line';
+                series.data = bufferRateData;
+                series.markLine = { data: [ {type: 'average', name: '平均值'} ]};
+                provinceSeriesData.push(series);
+            #end
+            var option = {
+                title: {
+                    text: '卡顿比',
+                    subtext: '近${day}天'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    bottom: 20,
+                    left: 'center',
+                    data: provinceSourceData,
+                    selected: {
+                        #foreach($sourceId in $platformSourceIdList)
+                            '${platformSourceNameMap.get($sourceId)}' : ${platformSourceBufferingNameMaps.get($sourceId)},
+                        #end
+                        'test' : false
+                    }
+                },
+                toolbox: {
+                    show: true,
+                    feature: {
+                        dataZoom: {
+                            yAxisIndex: 'none'
+                        },
+                        dataView: {readOnly: false},
+                        magicType: {type: ['line', 'bar']},
+                        restore: {},
+                        saveAsImage: {}
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: provinceDateData
+                },
+                yAxis: {
+                    type: 'value',
+                    axisLabel: {
+                        formatter: '{value} %'
+                    }
+                },
+                series: provinceSeriesData
+            };
+            provinceChart.setOption(option);
+        #end
+
+//首屏信息
+        #if((${platformSourceFirstplayIdList.size()} > 0) || (${platformFirstplayDateFormatList.size()} > 0))
+            var provinceChart = echarts.init(document.getElementById('platformSourceFirstplayShow'));
+            var provinceDateData = new Array();
+            var provinceSeriesData = new Array();
+            var provinceSourceData = new Array();
+            #foreach($date in $platformFirstplayDateFormatList)
+                provinceDateData.push('$date');
+            #end
+            #foreach($sourceId in $platformSourceFirstplayIdList)
+                var dataList = ${platformSourceFirstplayListMap.get($sourceId)};
+                var sourceName = '${platformSourceFirstplayNameMap.get($sourceId)}';
+                provinceSourceData.push(sourceName);
+                var bufferRateData = new Array();
+                dataList.forEach(function(bufferRate){
+                    bufferRateData.push(bufferRate);
+                });
+                var series = new Object();
+                series.name = sourceName;
+                series.type = 'line';
+                series.data = bufferRateData;
+                series.markLine = { data: [ {type: 'average', name: '平均值'} ]};
+                provinceSeriesData.push(series);
+            #end
+            provinceSourceData.push('测试');
+            var option = {
+                title: {
+                    text: '首屏时间',
+                    subtext: '近${day}天'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    bottom: 20,
+                    left: 'center',
+                    data: provinceSourceData,
+                    selected: {
+                        #foreach($sourceId in $platformSourceFirstplayIdList)
+                            '${platformSourceFirstplayNameMap.get($sourceId)}' : ${platformSourceFirstplayNameMaps.getOrDefault($sourceId,false)},
+                        #end
+                        'test' : false
+                    }
+                },
+                toolbox: {
+                    show: true,
+                    feature: {
+                        dataZoom: {
+                            yAxisIndex: 'none'
+                        },
+                        dataView: {readOnly: false},
+                        magicType: {type: ['line', 'bar']},
+                        restore: {},
+                        saveAsImage: {}
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: provinceDateData
+                },
+                yAxis: {
+                    type: 'value',
+                    axisLabel: {
+                        formatter: '{value} s'
+                    }
+                },
+                series: provinceSeriesData
+            };
+            provinceChart.setOption(option);
+        #end
+
+    });
+
+</script>
+#end

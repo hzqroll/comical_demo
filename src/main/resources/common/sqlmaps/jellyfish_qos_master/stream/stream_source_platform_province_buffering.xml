@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="StreamSourcePlatformProvinceBufferingDao">
+
+    <resultMap id="SourcePlatformProvinceBufferingResult"
+               class="com.roll.comical.console.business.stream.buffering.sourcePlatformProvince.StreamSourcePlatformProvinceBuffering">
+        <result property="platformId" column="platform_id"/>
+        <result property="sourceId" column="source_id"/>
+        <result property="provinceId" column="province_id"/>
+        <result property="date" column="date"/>
+        <result property="bufferingCount" column="buffering_count"/>
+        <result property="fluencyCount" column="fluency_count"/>
+    </resultMap>
+
+    <resultMap id="PlatformProvinceBufferingResult"
+               class="com.roll.comical.console.business.stream.buffering.sourcePlatformProvince.StreamSourcePlatformProvinceBuffering">
+        <result property="platformId" column="platform_id"/>
+        <result property="sourceId" column="source_id"/>
+        <result property="provinceId" column="province_id"/>
+        <result property="date" column="date"/>
+        <result property="bufferingCount" column="buffering_count"/>
+        <result property="fluencyCount" column="fluency_count"/>
+    </resultMap>
+
+    <select id="getList" parameterClass="map" resultMap="SourcePlatformProvinceBufferingResult">
+        <![CDATA[
+
+        select *
+        from stream_source_platform_province_buffering_info
+       	where
+       	`source_id` = #sourceId#
+       	and `date` >= #startDate#
+       	and `date` <= #endDate#
+        order by `date` asc, `platform_id` asc,`province_id` ASC
+
+        ]]>
+    </select>
+
+    <select id="getProvinceList" parameterClass="map" resultMap="PlatformProvinceBufferingResult">
+        <![CDATA[
+
+        select *
+        from stream_source_platform_province_buffering_info
+       	where
+       	`source_id` = #sourceId#
+       	and `platform_id` = #platformId#
+       	and `date` = #nowDate#
+        order by `province_id` ASC
+
+        ]]>
+    </select>
+
+    <select id="getAllList" parameterClass="map" resultMap="PlatformProvinceBufferingResult">
+        <![CDATA[
+
+        select *
+        from stream_source_platform_province_buffering_info
+       	where `date` = #nowDate#
+        order by `province_id` ASC,`platform_id` ASC ,`source_id` ASC
+
+        ]]>
+    </select>
+
+</sqlMap>

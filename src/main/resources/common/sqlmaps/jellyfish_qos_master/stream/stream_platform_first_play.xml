@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="StreamPlatformFirstplayDao">
+
+    <resultMap id="StreamPlatformFirstplayResult" class="com.roll.comical.console.business.stream.buffering.platform.PlatformFirstplay">
+        <result property="platformId" column="platform_id"/>
+        <result property="date" column="date"/>
+        <result property="bufferTime" column="buffer_time"/>
+        <result property="bufferTimeCount" column="buffer_time_count"/>
+    </resultMap>
+    <select id="getList" parameterClass="map" resultMap="StreamPlatformFirstplayResult">
+        <![CDATA[
+        select *
+        from stream_platform_first_play_info
+       	where `date` >= #startDate#
+       	and `date` <= #endDate#
+        order by `date` asc, `platform_id` asc
+        ]]>
+    </select>
+</sqlMap>

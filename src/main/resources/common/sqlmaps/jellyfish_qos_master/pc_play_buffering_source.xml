@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="PCBufferingSourceDao">
+
+    <resultMap id="PCBufferingSourceResult" class="com.roll.comical.console.business.buffering.DailyBuffering">
+        <result property="sourceId" column="source_id"/>
+        <result property="date" column="date"/>
+        <result property="bufferingCount" column="buffering_count"/>
+        <result property="fluencyCount" column="fluency_count"/>
+    </resultMap>
+    <select id="getList" parameterClass="map" resultMap="PCBufferingSourceResult">
+        <![CDATA[
+        select *
+        from pc_buffering_source
+       	where `date` >= #startDate#
+       	and `date` <= #endDate#
+        order by `date` asc, `source_id` asc
+        ]]>
+    </select>
+
+</sqlMap>

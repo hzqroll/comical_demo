@@ -1,0 +1,122 @@
+#set($ctx = $requestContext.contextPath)
+
+#macro( header $title $cssList )
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>$title</title>
+    <link href="${ctx}/css/bootstrap.css" rel="stylesheet">
+    #foreach( $cssFile in $cssList )
+        <link href="${ctx}/css/business/${cssFile}" rel="stylesheet">
+    #end
+    <script src="$ctx/js/jquery-1.11.3.min.js"></script>
+    <script src="$ctx/js/bootstrap.js"></script>
+    <script>
+        var CONTEXT_PATH = '$ctx';
+    </script>
+</head>
+#end
+
+#macro( navbar $moduleName)
+<div class="navbar navbar-default navbar-static-top" style="z-index: 100;">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <span class="navbar-brand">$moduleName</span>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li id="nav_button_category_manage" class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">平台<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a id="nav_button_platform_stream_buffering" href="${ctx}/daily/stream/platform/info/direction.htm">直播</a></li>
+                        <li><a id="nav_button_source_video_buffering" href="${ctx}/daily/video/platform/info/direction.htm">视频</a></li>
+                    </ul>
+                </li>
+                <li id="nav_button_category_manage" class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">CDN<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a id="nav_button_source_stream_buffering" href="${ctx}/daily/stream/platform/source/info/direction.htm">直播</a></li>
+##                        <li><a id="nav_button_source_video_buffering" href="${ctx}/daily/video/platform/source/info/direction.htm">视频</a></li>
+                    </ul>
+                </li>
+                <li id="nav_button_category_manage" class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">全省<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a id="nav_button_source_platform_province_stream_buffering" href="${ctx}/daily/stream/province/info/direction.htm">直播</a></li>
+                        <li><a id="nav_button_source_platform_province_video_buffering" href="${ctx}/daily/video/province/info/direction.htm">视频</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</div>
+#end
+
+#macro( js $jsList)
+    #foreach( $jsFile in $jsList )
+    <script src="$ctx/js/business/${jsFile}"></script>
+    #end
+#end
+
+#macro( frame $moduleName $cssList $jsList)
+    #header("后台-$moduleName", $cssList)
+<body class="nav-content-zeus">
+    #navbar( $moduleName )
+	$!bodyContent
+	#js( $jsList )
+</body>
+</html>
+#end
+
+#macro( pagebar $pageInfo $url)
+<div style="height:34px">
+    <ul class="pagination pagination-sm marginTop0">
+        #set($currentPage = $pageInfo.page)
+
+        #set($pageParam = "")
+        #if($url.contains("?"))
+            #set($pageParam = "&page=")
+        #else
+            #set($pageParam = "?page=")
+        #end
+
+        #if($currentPage > 1)
+            #set($callback = $url + $pageParam + ($currentPage - 1))
+            <li><a href="$callback">&laquo;</a></li>
+        #end
+
+        #if(($currentPage > 3))
+            #set($start = ($currentPage - 2))
+        #else
+            #set($start = 1)
+        #end
+        #set($end = $start + 4)
+        #set($pageList = [$start..$end])
+
+        #foreach($page in $pageList)
+            #if($page <= $pageInfo.totalPage)
+                #set($callback = $url + $pageParam + $page)
+                #if($page == $currentPage)
+                    <li class="active"><a href="#">$page<span class="sr-only">(current)</span></a></li>
+                #else
+                    <li><a href="$callback">$page</a></li>
+                #end
+            #end
+        #end
+
+        #if($currentPage < $pageInfo.totalPage)
+            #set($callback = $url + $pageParam + ($currentPage + 1))
+            <li><a href="$callback">&raquo;</a></li>
+        #end
+    </ul>
+</div>
+#end
+

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="PCFirstPlayBufferingDao">
+
+    <resultMap id="PCFirstPlayBufferingResult" class="com.roll.comical.console.business.first.play.FirstPlayBuffering">
+        <result property="sourceId" column="source_id"/>
+        <result property="date" column="date"/>
+        <result property="bufferTime" column="buffer_time"/>
+        <result property="bufferTimeCount" column="buffer_time_count"/>
+    </resultMap>
+    <select id="getList" parameterClass="map" resultMap="PCFirstPlayBufferingResult">
+        <![CDATA[
+        select *
+        from pc_first_play_buffering_source
+       	where `date` >= #startDate#
+       	and `date` <= #endDate#
+        order by `date` asc, `source_id` asc
+        ]]>
+    </select>
+</sqlMap>
