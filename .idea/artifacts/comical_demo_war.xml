@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="comical_demo:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="jellyfish-qos-console.war">
+      <element id="artifact" artifact-name="comical_demo:war exploded" />
+    </root>
+  </artifact>
+</component>
