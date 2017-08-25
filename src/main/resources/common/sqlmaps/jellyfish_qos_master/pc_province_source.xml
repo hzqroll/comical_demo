@@ -2,23 +2,16 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="PCProvinceSourceDao">
 
-    <resultMap id="PCProvinceSourceResult" class="com.roll.comical.console.business.province.ProvinceBuffering">
-        <result property="provinceId" column="province_id"/>
-        <result property="sourceId" column="source_id"/>
-        <result property="date" column="date"/>
-        <result property="bufferingCount" column="buffering_count"/>
-        <result property="fluencyCount" column="fluency_count"/>
-    </resultMap>
-    <select id="getList" parameterClass="map" resultMap="PCProvinceSourceResult">
+    <select id="update" parameterClass="map">
         <![CDATA[
-        select *
-        from pc_buffering_province_source
-       	where
-       	`province_id` = #provinceId#
-       	and `date` >= #startDate#
-       	and `date` <= #endDate#
-        order by `date` asc, `source_id` asc
+        SELECT $tableName$
+        SET `state` = #auditLog.state#, `username` = #auditLog.username#,
+        `source` = #auditLog.source#, `ip` = #auditLog.ip#
+        WHERE `id` = #auditLog.id#
         ]]>
+        <if test="1=1">
+            AND  1=1
+        </if>
     </select>
 
 </sqlMap>
