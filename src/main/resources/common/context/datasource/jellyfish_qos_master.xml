@@ -15,7 +15,7 @@
 		<property name="idleConnectionTestPeriod" value="${jellyfish.qos.jdbc.c3p0.idleConnectionTestPeriod}" />
 	</bean>
 
-	<bean id="jellyfishQosMasterSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+	<!--<bean id="jellyfishQosMasterSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
 		<property name="configLocation"
 			value="classpath:sqlmaps/jellyfish_qos_master/sqlMapConfig.xml" />
 		<property name="dataSource" ref="jellyfishQosMasterDataSource" />
@@ -25,17 +25,17 @@
 		<property name="sqlMapClient" ref="jellyfishQosMasterSqlMapClient" />
 	</bean>
 
-	<!-- 配置数据源-->
+	&lt;!&ndash; 配置数据源&ndash;&gt;
 	<bean id="dataSource1" class="org.apache.commons.dbcp.BasicDataSource"
 		  destroy-method="close"
 		  p:driverClassName="com.mysql.jdbc.Driver"
 		  p:url="${jdbcUrl}"
 		  p:username="${user}"
 		  p:password="${password}"/>
-<!-- 声明jdbcTemplateBean-->
+&lt;!&ndash; 声明jdbcTemplateBean&ndash;&gt;
 	<bean id="jdbcTemplate"
 		  class="org.springframework.jdbc.core.JdbcTemplate"
-		  p:dataSource-ref="dataSource1"/>
+		  p:dataSource-ref="dataSource1"/>-->
 
 
 

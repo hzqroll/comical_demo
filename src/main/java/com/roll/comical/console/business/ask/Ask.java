@@ -1,7 +1,5 @@
 package com.roll.comical.console.business.ask;
 
-import java.util.Date;
-
 /**
  * User: roll
  * Date: 2017/2/4
@@ -14,7 +12,7 @@ public class Ask {
 	private static int count = 0;
 
 	public static void main(String[] args) {
-		new Thread(() -> {
+		/*new Thread(() -> {
 			while (true) {
 				count++;
 
@@ -30,7 +28,7 @@ public class Ask {
 				//System.out.println("2b:" + b);
 			}
 		}
-		).start();
+		).start();*/
 	}
 }
 	/*上面这段代码，第一个线程比较b和!b，第二个线程不断改变b的值，
