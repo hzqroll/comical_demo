@@ -14,7 +14,7 @@ import com.roll.comical.console.business.rabbitmq.TestQueue;
 
 @Controller
 @RequestMapping("/test")
-public class Testcontroller {
+public class TestController {
 	@Autowired
 	private TestQueue testQueue;
 
