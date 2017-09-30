@@ -1,10 +1,8 @@
 package com.roll.comical.console.business.socket;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
-import java.net.ServerSocket;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.net.Socket;
 
 /**
@@ -16,17 +14,16 @@ import java.net.Socket;
  */
 public class ServerSocketTest {
 	public static void main(String args[]) throws IOException {
-		ServerSocket server = new ServerSocket(8080);
-		Socket socket = server.accept();
-		BufferedReader fs = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-		String line = fs.readLine();
-		System.out.println("receive from client:" + line);
-		PrintStream pw = new PrintStream(socket.getOutputStream());
-		pw.print("receive data:" + line);
-		pw.flush();
-		pw.close();
-		fs.close();
-		socket.close();
-		server.close();
+		//为了简单起见，所有的异常都直接往外抛
+		String host = "127.0.0.1";  //要连接的服务端IP地址
+		int port = 8899;   //要连接的服务端对应的监听端口
+		//与服务端建立连接
+		Socket client = new Socket(host, port);
+		//建立连接后就可以往服务端写数据了
+		Writer writer = new OutputStreamWriter(client.getOutputStream());
+		writer.write("Hello Server.");
+		writer.flush();//写完后要记得flush
+		writer.close();
+		client.close();
 	}
 }

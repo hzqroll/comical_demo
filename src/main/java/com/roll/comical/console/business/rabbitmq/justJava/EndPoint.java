@@ -37,7 +37,12 @@ public class EndPoint {
 
 		//declaring a queue for this channel. If queue does not exist,
 		//it will be created on the server.
-		channel.queueDeclare(endpointName, true, false, false, null);
+		channel.exchangeDeclare("exchange_topic", "topic", false, true, null);
+		//队列名称
+		String queueName = endpointName + ".queue";
+		channel.queueDeclare(queueName, false, false, true, null);
+		//把队列绑定到路由上
+		channel.queueBind(queueName, "exchange_topic", endpointName);
 	}
 
 

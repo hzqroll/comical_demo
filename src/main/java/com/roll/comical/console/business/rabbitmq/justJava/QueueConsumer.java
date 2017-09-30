@@ -18,7 +18,7 @@ import com.rabbitmq.client.ShutdownSignalException;
  */
 public class QueueConsumer extends EndPoint implements Runnable, Consumer {
 
-	public QueueConsumer(String endpointName) throws IOException {
+	QueueConsumer(String endpointName) throws IOException {
 		super(endpointName);
 	}
 
@@ -27,9 +27,9 @@ public class QueueConsumer extends EndPoint implements Runnable, Consumer {
 		try {
 			//start consuming messages. Auto acknowledge messages.
 			channel.basicConsume(endPointName, true, this);
-			channel.queueDeclare("", true, false, false, null);
+			channel.queueDeclare("123", true, false, false, null);
 			System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
-			channel.basicQos(1);
+			channel.basicQos(100);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -63,6 +63,6 @@ public class QueueConsumer extends EndPoint implements Runnable, Consumer {
 	@Override
 	public void handleDelivery(String s, Envelope envelope, AMQP.BasicProperties basicProperties, byte[] bytes) throws IOException {
 		Map map = (HashMap) SerializationUtils.deserialize(bytes);
-		System.out.println("Message Number " + map.get("message number") + " received.");
+		System.out.println("rout key: "+envelope.getRoutingKey()+", Message Number " + map.get("message number") + " received.");
 	}
 }
