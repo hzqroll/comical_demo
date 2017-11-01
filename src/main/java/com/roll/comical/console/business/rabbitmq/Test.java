@@ -11,10 +11,10 @@ public class Test {
 	@Autowired
 	private AsyncExecutorService asyncExecutorService;
 
-	/*public void startTask() {
-		asyncExecutorService.execute(() -> {
-			//syso("run");
-		});
-	}*/
+	public static void main(String args[]) {
+		double a = 4d;
+		double b = 3d;
+		System.out.println((a / b));
+	}
 
 }

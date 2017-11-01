@@ -59,7 +59,5 @@ public class DirectConsumer {
 			};
 			channel.basicConsume(queueName, true, consumer);
 		}
-
 	}
-
 }

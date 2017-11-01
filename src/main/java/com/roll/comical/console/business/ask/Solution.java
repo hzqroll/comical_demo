@@ -1,53 +1,51 @@
 package com.roll.comical.console.business.ask;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang.ArrayUtils;
+
 /**
  * User: roll
  * Date: 2017/2/4
  * Time: 下午3:28
  *
  * @author zongqiang.hao
- *         中毒问题
+ * 中毒问题
  */
 public class Solution {
-	private static int findPosisonedDuration(int[] timeSeries, int duration) {
-		if (timeSeries == null || timeSeries.length == 0 || duration == 0) return 0;
-		int result = 0, start = timeSeries[0], end = timeSeries[0] + duration;
-		for (int i = 1; i < timeSeries.length; i++) {
-			if (timeSeries[i] > end) {
-				result += end - start;
-				start = timeSeries[i];
-			}
-			end = timeSeries[i] + duration;
-		}
-		result += end - start;
-
-		return result;
-	}
-
-	public int findPosisonedDuration2(int[] timeSeries, int duration) {
-
-		int total_poisoned_time = 0,
-				next_start_time = 0;
-
-		for(int i=0;i<timeSeries.length;++i)
-		{
-			if(timeSeries[i] == 0 || timeSeries[i] - next_start_time > 0)
-			{
-				next_start_time = timeSeries[i] + duration - 1;
-				total_poisoned_time += duration;
-			}
-			else
-			{
-				total_poisoned_time += (timeSeries[i] + duration - 1) - next_start_time; // since overlapping happens , we calculate the offset before judging next start time for poisoning state
-				next_start_time = timeSeries[i] + duration - 1;
-			}
-		}
-
-		return total_poisoned_time;
-	}
-
 	public static void main(String args[]) {
 		int[] a = {1, 2, 3, 4, 5, 6, 10};
-		System.out.println(findPosisonedDuration(a, 2));
+		System.out.println(1);
+	}
+
+	/**
+	 * 输入一个整数数组，实现一个函数来调整该数组中数字的顺序，
+	 * 使得所有的奇数位于数组的前半部分，所有的偶数位于位于数组的后半部分，
+	 * 并保证奇数和奇数，偶数和偶数之间的相对位置不变。
+	 *
+	 * @param array
+	 */
+	private static void reOrderArray(int[] array) {
+		List<Integer> odd = new ArrayList<>();
+		List<Integer> even = new ArrayList<>();
+		int length = array.length;
+
+		for (int i = 0; i < length; i++) {
+			if (array[i] % 2 == 0) {
+				even.add(i);
+				ArrayUtils.remove(array, i);
+			}
+			if (i % 2 != 0) {
+				odd.add(i);
+				ArrayUtils.remove(array, i);
+			}
+		}
+		int[] nullArray = {};
+		array = nullArray;
+
+		for (int i = 0; i < length; i++) {
+			array[i] =1;
+		}
 	}
 }

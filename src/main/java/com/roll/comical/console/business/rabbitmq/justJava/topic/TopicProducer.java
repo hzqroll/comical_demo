@@ -17,6 +17,8 @@ public class TopicProducer {
 	private static final String EXCHANGE_NAME = "exchange_topic";
 
 	public static void main(String[] argv) throws Exception {
+		TopicConsumer topicConsumer = new TopicConsumer();
+		topicConsumer.start();
 		new ExchangeTopic("logs.info", "logs Info test ！！");
 		new ExchangeTopic("logs.error", "logs error test ！！");
 		new ExchangeTopic("logs.error.toc", "logs error toc test ！！");
