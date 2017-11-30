@@ -4,7 +4,6 @@ import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Date: 2017/9/28
@@ -17,19 +16,19 @@ public class ExecutorTest implements Runnable {
 
 	@Override
 	public void run() {
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 1000; i++) {
 			FutureTaskTest futureTaskTest = new FutureTaskTest();
 			futureTaskTest.FutureTaskTest(i);
 			pool.submit(futureTaskTest);
-			try {
+			/*try {
 				pool.poll(1000, TimeUnit.MILLISECONDS);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
-			}
+			}*/
 
 		}
 
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 1000; i++) {
 			try {
 				System.out.println(pool.take().get());
 			} catch (InterruptedException e) {
@@ -41,7 +40,9 @@ public class ExecutorTest implements Runnable {
 	}
 
 	public static void main(String args[]) {
-		ExecutorTest executorTest = new ExecutorTest();
-		executorTest.run();
+		/*ExecutorTest executorTest = new ExecutorTest();
+		executorTest.run();*/
+		int a = 100;
+		System.out.println(-a);
 	}
 }

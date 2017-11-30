@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.roll.comical.console.business.rabbitmq.TestQueue;
 
 /**
- * @author micah.shi
+ * @author
  */
 
 @Controller

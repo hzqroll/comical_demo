@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean id="comicalDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="driverClass" value="${jellyfish.qos.jdbc.c3p0.driverClass}" />
+		<property name="jdbcUrl" value="${comical.jdbc.c3p0.jdbcUrl}" />
+		<property name="user" value="${comical.jdbc.c3p0.user}" />
+		<property name="password" value="${comical.jdbc.c3p0.password}" />
+		<property name="initialPoolSize" value="${jellyfish.qos.jdbc.c3p0.initialPoolSize}" />
+		<property name="minPoolSize" value="${jellyfish.qos.jdbc.c3p0.minPoolSize}" />
+		<property name="maxPoolSize" value="${jellyfish.qos.jdbc.c3p0.maxPoolSize}" />
+		<property name="idleConnectionTestPeriod" value="${jellyfish.qos.jdbc.c3p0.idleConnectionTestPeriod}" />
+	</bean>
+
+	<bean id="comicalSqlSession" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="comicalDataSource" />
+		<property name="mapperLocations" value="classpath*:sqlmaps/user_dao_interface.xml" />
+		<property name="typeAliasesPackage" value="com.roll.comical.console.business.mybatis.UserBean" />
+	</bean>
+
+	<bean id="comicalSqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="comicalSqlSession"/>
+	</bean>
+
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="comicalDataSource" />
+	</bean>
+
+	<bean id="userMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.roll.comical.console.business.mybatis.UserMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+</beans>
