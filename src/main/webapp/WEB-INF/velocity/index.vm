@@ -1,6 +1,5 @@
-#parse( "include/common.vm" )
-#@frame("首页", [], [])
+
 <div class="container online_block">
     welcome to the world!
 </div>
-#end
+
